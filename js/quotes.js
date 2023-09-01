@@ -73,8 +73,8 @@ const quotes = [
     }
 ]
 
-const quote = document.querySelector("#quote span:nth-child(1)");
-const author = document.querySelector("#quote span:nth-child(2)");
+const quote = document.querySelector(".quote span:nth-child(1)");
+const author = document.querySelector(".quote span:nth-child(2)");
 
 const todaysQuote = quotes[Math.floor(Math.random()*quotes.length)];
 
