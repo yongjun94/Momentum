@@ -1,22 +1,46 @@
-const API_KEY = "tokenKey";
+const API_KEY = "12fa9bd8cdbe305e2c98b0896ec39228";
+const WEATHER_API = "https://api.openweathermap.org/data/2.5/weather?";
 
-function onGeoOK(position){
+const weather = document.querySelector(".weather .weather_text");
+
+function getWeather(coords) {
+    fetch(`${WEATHER_API}lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}&units=metric`)
+    .then(response => response.json())
+    .then(json => {
+        const name = json.name;
+        const temperature = json.main.temp;
+        weather.innerHTML = `${Math.floor(temperature)}° @ ${name}`;
+    });
+}
+
+function handleGeoSuccess(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    console.log(`위도 : ${lat}, 경도 : ${lon}`);
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-
-    console.log(url);
-    fetch(url).then(Response => Response.json().then((data)=> {
-        const city = document.querySelector("#weather span:nth-child(1)");
-        const weather = document.querySelector("#weather span:nth-child(2)");
-        city.innerText = data.name;
-        weather.innerText = `날씨 : ${data.weather[0].main} / 온도 : ${data.main.temp}'C`;
-    }));
+    const coords = {
+        lat,
+        lon
+    };
+    localStorage.setItem("coords", JSON.stringify(coords));
+    getWeather(coords);
 }
 
-function onGeoError() {
-    alert("위치를 찾을 수 없습니다.")
+function handleGeoFail() {
+    console.log("위치를 찾을 수 없습니다.")
 }
 
-navigator.geolocation.getCurrentPosition(onGeoOK, onGeoError);
+function loadWeather() {
+    const currentCoords = localStorage.getItem("coords");
+    if (currentCoords !== null) {
+        const parseCoords = JSON.parse(currentCoords);
+        getWeather(parseCoords);
+        return;
+    } else {
+        navigator.geolocation.getCurrentPosition(handleGeoSuccess, handleGeoFail);
+    }
+}
+
+function init() {
+    loadWeather();
+}
+
+init();
