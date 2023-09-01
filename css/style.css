@@ -1,3 +1,6 @@
-.hidden{
-    display: none;
-}
+@import "center.css";
+@import "clock.css";
+@import "location.css";
+@import "main.css";
+@import "todo.css";
+@import "weather.css";
